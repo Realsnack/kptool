@@ -11,6 +11,9 @@ pub struct Args {
 
     #[arg(short, long)]
     pub password: Option<String>,
+
+    #[arg(long)]
+    pub debug: bool,
 }
 
 #[derive(Subcommand, Debug)]
