@@ -1,4 +1,5 @@
 mod arguments;
+mod models;
 
 use keepass::{
     db::{Group, Node, NodeRef},
@@ -9,7 +10,8 @@ use keepass::{
 use clap::Parser;
 
 use arguments::Args;
-use std::fs::File;
+use models::{kp_entry::KpEntry, kp_group::KpGroup};
+use std::{collections::HashMap, fs::File};
 
 fn main() -> Result<(), DatabaseOpenError> {
     let args = Args::parse();
@@ -36,25 +38,57 @@ fn main() -> Result<(), DatabaseOpenError> {
                 Some(pass) => println!("Password for entry '{}': '{}'", path, pass),
                 None => println!("No entry found with the title '{}'", path),
             }
-        },
-        _ => println!("Not implemented")
+        }
+        arguments::Commands::FillTemplate { file_path } => {
+            let _ = file_path;
+            match create_database_tree(&db.root) {
+                None => {
+                    println!("Unfortunatelly, no entries have been found");
+                    std::process::exit(1);
+                }
+                Some(root_group) => {
+                    println!("Haha");
+                }
+            }
+        }
+        _ => println!("Not implemented"),
     }
 
-    // for node in &db.root {
-    //     match node {
-    //         NodeRef::Group(g) => {
-    //             println!("Saw group '{0}'", g.name);
-    //         }
-    //         NodeRef::Entry(e) => {
-    //             let title = e.get_title().unwrap_or("(no title)");
-    //             let user = e.get_username().unwrap_or("(no username)");
-    //             let pass = e.get_password().unwrap_or("(no password)");
-    //             println!("Entry '{0}': '{1}' : '{2}'", title, user, pass);
-    //         }
-    //     }
-    // }
-
     Ok(())
+}
+
+fn create_database_tree(db_group: &Group) -> Option<KpGroup> {
+    let mut root_group = KpGroup::new();
+    create_group_node(&db_group, &mut root_group);
+
+    if root_group.entries.len() == 0 && root_group.groups.len() == 0 {
+        return None;
+    }
+
+    Some(root_group)
+}
+
+fn create_group_node(group_ref: &Group, parent_group: &mut KpGroup) {
+    for node in &group_ref.children {
+        match node {
+            Node::Group(g) => {
+                println!("Group '{}' added under: {}", g.name, group_ref.name);
+                let mut added_group = KpGroup::new();
+                create_group_node(&g, &mut added_group);
+                parent_group.groups.insert(g.clone().name, added_group);
+            }
+            Node::Entry(e) => {
+                let title = e.get_title().unwrap_or("(no title)");
+                let user = e.get_username().unwrap_or("(no username)");
+                let pass = e.get_password().unwrap_or("(no password)");
+                println!("Adding '{}' to tree, under: {}", title, group_ref.name);
+                parent_group.entries.insert(
+                    e.get_title().unwrap_or("(no title)").to_string(),
+                    KpEntry::new(Some(user.to_string()), Some(pass.to_string())),
+                );
+            }
+        }
+    }
 }
 
 fn find_password_by_path(db: &Database, full_path: &str) -> Option<String> {
