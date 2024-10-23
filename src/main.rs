@@ -71,7 +71,7 @@ fn create_database_tree(db_group: &Group) -> Option<KpGroup> {
     let mut root_group = KpGroup::new();
     create_group_node(&db_group, &mut root_group);
 
-    if root_group.entries.len() == 0 && root_group.groups.len() == 0 {
+    if root_group.entries.is_empty() && root_group.groups.is_empty() {
         return None;
     }
 
