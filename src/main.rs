@@ -42,7 +42,7 @@ fn main() -> Result<(), DatabaseOpenError> {
             let password = find_password_by_path(&keepass_tree, &path);
             match password {
                 Ok(pass) => println!("Password for entry '{}': '{}'", path, pass),
-                Err(E) => println!("No entry found with the title '{}'", path),
+                Err(e) => println!("ERROR: {}", e),
             }
         }
         arguments::Commands::FillTemplate { file_path } => {
@@ -57,11 +57,6 @@ fn main() -> Result<(), DatabaseOpenError> {
                 }
             }
         },
-        arguments::Commands::GetPasswordNew { path } => {
-            let password = find_password_by_path(&keepass_tree, path).unwrap();
-
-            println!("{}", password);
-        }
         _ => println!("Not implemented"),
     }
 
