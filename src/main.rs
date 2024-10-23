@@ -2,7 +2,7 @@ mod arguments;
 mod models;
 
 use keepass::{
-    db::{Group, Node, NodeRef},
+    db::{Group, Node},
     error::DatabaseOpenError,
     Database, DatabaseKey,
 };
@@ -11,7 +11,7 @@ use clap::Parser;
 
 use arguments::Args;
 use models::{kp_entry::KpEntry, kp_group::KpGroup, kp_tree::KpTree, kp_error::KpError};
-use std::{collections::HashMap, fs::File, io};
+use std::fs::File;
 
 fn main() -> Result<(), DatabaseOpenError> {
     let args = Args::parse();
