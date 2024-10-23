@@ -38,6 +38,17 @@ fn main() -> Result<(), DatabaseOpenError> {
     let keepass_tree = KpTree::new(loaded_database, checksum);
 
     match &args.command {
+        arguments::Commands::GetEntry { path } => {
+            // let entry = find_entry_by_path(&keepass_tree, &path);
+
+            match find_entry_by_path(&keepass_tree, &path) {
+                Ok(entry) => {
+                    println!("Entry detail: {:?}", entry);
+                },
+                Err(e) => println!("ERROR: {}", e),
+            }
+
+        },
         arguments::Commands::GetPassword { path } => {
             let password = find_password_by_path(&keepass_tree, &path);
             match password {
@@ -138,6 +149,27 @@ fn find_password_by_path(kp_tree: &KpTree, search_path: &str) -> Result<String, 
                         Ok(password.to_owned())
                     }
                 }
+            }
+        }
+    }
+    else {
+        Err(KpError::EntryNotFound(search_path.to_string()))
+    }
+}
+
+fn find_entry_by_path<'a >(kp_tree: &'a KpTree, search_path: &str) -> Result<&'a KpEntry, KpError> {
+    let splitted_search_path: Vec<&str> = search_path.split(".").collect();
+    let searched_group = find_target_kp_group(kp_tree, &splitted_search_path)?;
+    
+    let entry_path = splitted_search_path.last().copied().unwrap();
+    if searched_group.entries.contains_key(entry_path) {
+        // searched_group.entries.get(entry_path).unwrap().password.as_ref().unwrap();
+        match searched_group.entries.get(entry_path) {
+            None => {
+                Err(KpError::EntryNotFound(search_path.to_string()))
+            },
+            Some(entry) => {
+                Ok(entry)
             }
         }
     }

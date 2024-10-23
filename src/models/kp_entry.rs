@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub struct KpEntry {
     pub username: Option<String>,
     pub password: Option<String>,
