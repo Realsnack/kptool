@@ -46,6 +46,12 @@ fn main() -> Result<(), DatabaseOpenError> {
                 Err(e) => println!("ERROR: {}", e),
             }
         },
+        arguments::Commands::GetUsername { path } => {
+            match find_username_by_path(&keepass_tree, &path) {
+                Ok(username) => println!("Found username: {}", username),
+                Err(e) => println!("ERROR: {}", e),
+            }
+        },
         arguments::Commands::GetPassword { path } => {
             match find_password_by_path(&keepass_tree, &path) {
                 Ok(pass) => println!("Password for entry '{}': '{}'", path, pass),
@@ -144,7 +150,7 @@ fn find_password_by_path(kp_tree: &KpTree, search_path: &str) -> Result<String, 
     }
 }
 
-fn find_entry_by_path<'a >(kp_tree: &'a KpTree, search_path: &str) -> Result<&'a KpEntry, KpError> {
+fn find_entry_by_path<'a>(kp_tree: &'a KpTree, search_path: &str) -> Result<&'a KpEntry, KpError> {
     let splitted_search_path: Vec<&str> = search_path.split(".").collect();
     let searched_group = find_target_kp_group(kp_tree, &splitted_search_path)?;
     
@@ -162,5 +168,21 @@ fn find_entry_by_path<'a >(kp_tree: &'a KpTree, search_path: &str) -> Result<&'a
     }
     else {
         Err(KpError::EntryNotFound(search_path.to_string()))
+    }
+}
+
+fn find_username_by_path(kp_tree: &KpTree, search_path: &str) -> Result<String, KpError> {
+    match find_entry_by_path(kp_tree, search_path) {
+        Ok(entry) => {
+            match &entry.username {
+                Some(username) => {
+                    Ok(username.clone())
+                },
+                None => {
+                    Err(KpError::UsernameNotFound(search_path.to_string()))
+                }
+            }
+        },
+        Err(e) => Err(e),
     }
 }
