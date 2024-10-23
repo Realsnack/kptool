@@ -22,4 +22,5 @@ pub enum Commands {
     GetUsername { path: String },
     GetPassword { path: String },
     FillTemplate { file_path: String },
+    GetPasswordNew { path: String }
 }

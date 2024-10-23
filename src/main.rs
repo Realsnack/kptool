@@ -10,8 +10,8 @@ use keepass::{
 use clap::Parser;
 
 use arguments::Args;
-use models::{kp_entry::KpEntry, kp_group::KpGroup};
-use std::{collections::HashMap, fs::File};
+use models::{kp_entry::KpEntry, kp_group::KpGroup, kp_tree::KpTree, kp_error::KpError};
+use std::{collections::HashMap, fs::File, io};
 
 fn main() -> Result<(), DatabaseOpenError> {
     let args = Args::parse();
@@ -19,6 +19,9 @@ fn main() -> Result<(), DatabaseOpenError> {
     if args.debug {
         println!("Action chosen {:?}", args.command);
     }
+
+    let checksum = calculate_checksum(&args.database);
+    println!("Calculated cheksum {}", checksum);
 
     let mut file = File::open(args.database)?;
     let key = match &args.password {
@@ -30,6 +33,9 @@ fn main() -> Result<(), DatabaseOpenError> {
         Some(key) => Database::open(&mut file, key)?,
         None => panic!("No password supplied and key file not supported... yet :("),
     };
+
+    let loaded_database = create_database_tree(&db.root).unwrap();
+    let keepass_tree = KpTree::new(loaded_database, checksum);
 
     match &args.command {
         arguments::Commands::GetPassword { path } => {
@@ -50,6 +56,11 @@ fn main() -> Result<(), DatabaseOpenError> {
                     println!("Haha");
                 }
             }
+        },
+        arguments::Commands::GetPasswordNew { path } => {
+            let password = find_password_by_path_new(&keepass_tree, path).unwrap();
+
+            println!("{}", password);
         }
         _ => println!("Not implemented"),
     }
@@ -57,6 +68,12 @@ fn main() -> Result<(), DatabaseOpenError> {
     Ok(())
 }
 
+// REVIEW: possibly not necessary
+fn calculate_checksum(file_path: &String) -> String {
+    sha256::try_digest(file_path).unwrap()
+}
+
+// REVIEW: move to kp_tree.rs
 fn create_database_tree(db_group: &Group) -> Option<KpGroup> {
     let mut root_group = KpGroup::new();
     create_group_node(&db_group, &mut root_group);
@@ -88,6 +105,49 @@ fn create_group_node(group_ref: &Group, parent_group: &mut KpGroup) {
                 );
             }
         }
+    }
+}
+
+fn find_target_kp_group<'a>(kp_tree: &'a KpTree, splitted_search_path: &Vec<&str>) -> Result<&'a KpGroup, KpError> {
+    let mut searched_group = &kp_tree.root_group;
+    
+    for part_path in splitted_search_path.iter().take(splitted_search_path.len() - 1) {
+        if searched_group.groups.contains_key(*part_path) {
+            searched_group = &searched_group.groups[*part_path];
+        }
+        else {
+            return Err(KpError::GroupNotFound(splitted_search_path.join(".")));
+        }
+    }
+    
+    Ok(searched_group)
+}
+
+fn find_password_by_path_new(kp_tree: &KpTree, search_path: &str) -> Result<String, KpError> {
+    let splitted_search_path: Vec<&str> = search_path.split(".").collect();
+    let searched_group = find_target_kp_group(kp_tree, &splitted_search_path)?;
+    
+    let password_path = splitted_search_path.last().copied().unwrap();
+    if searched_group.entries.contains_key(password_path) {
+        // searched_group.entries.get(password_path).unwrap().password.as_ref().unwrap();
+        match searched_group.entries.get(password_path) {
+            None => {
+                Err(KpError::EntryNotFound(search_path.to_string()))
+            },
+            Some(entry) => {
+                match entry.password.as_ref() {
+                    None => {
+                        Err(KpError::PasswordNotFound(password_path.to_string()))
+                    },
+                    Some(password) => {
+                        Ok(password.to_owned())
+                    }
+                }
+            }
+        }
+    }
+    else {
+        Err(KpError::EntryNotFound(search_path.to_string()))
     }
 }
 
