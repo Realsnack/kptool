@@ -39,10 +39,10 @@ fn main() -> Result<(), DatabaseOpenError> {
 
     match &args.command {
         arguments::Commands::GetPassword { path } => {
-            let password = find_password_by_path(&db, &path);
+            let password = find_password_by_path(&keepass_tree, &path);
             match password {
-                Some(pass) => println!("Password for entry '{}': '{}'", path, pass),
-                None => println!("No entry found with the title '{}'", path),
+                Ok(pass) => println!("Password for entry '{}': '{}'", path, pass),
+                Err(E) => println!("No entry found with the title '{}'", path),
             }
         }
         arguments::Commands::FillTemplate { file_path } => {
@@ -58,7 +58,7 @@ fn main() -> Result<(), DatabaseOpenError> {
             }
         },
         arguments::Commands::GetPasswordNew { path } => {
-            let password = find_password_by_path_new(&keepass_tree, path).unwrap();
+            let password = find_password_by_path(&keepass_tree, path).unwrap();
 
             println!("{}", password);
         }
@@ -123,7 +123,7 @@ fn find_target_kp_group<'a>(kp_tree: &'a KpTree, splitted_search_path: &Vec<&str
     Ok(searched_group)
 }
 
-fn find_password_by_path_new(kp_tree: &KpTree, search_path: &str) -> Result<String, KpError> {
+fn find_password_by_path(kp_tree: &KpTree, search_path: &str) -> Result<String, KpError> {
     let splitted_search_path: Vec<&str> = search_path.split(".").collect();
     let searched_group = find_target_kp_group(kp_tree, &splitted_search_path)?;
     
@@ -149,37 +149,4 @@ fn find_password_by_path_new(kp_tree: &KpTree, search_path: &str) -> Result<Stri
     else {
         Err(KpError::EntryNotFound(search_path.to_string()))
     }
-}
-
-fn find_password_by_path(db: &Database, full_path: &str) -> Option<String> {
-    let path_parts: Vec<&str> = full_path.split('/').collect();
-    find_entry_in_group(&db.root, &path_parts)
-}
-
-fn find_entry_in_group(group: &Group, path_parts: &[&str]) -> Option<String> {
-    if path_parts.is_empty() {
-        return None;
-    }
-
-    let current_group_or_entry = path_parts[0]; // The current part of the path
-
-    for node in &group.children {
-        match node {
-            Node::Group(g) => {
-                if g.name == current_group_or_entry {
-                    return find_entry_in_group(g, &path_parts[1..]);
-                }
-            }
-            Node::Entry(e) => {
-                if e.get_title()
-                    .map_or(false, |title| title == current_group_or_entry)
-                    && path_parts.len() == 1
-                {
-                    return e.get_password().map(|s| s.to_string());
-                }
-            }
-        }
-    }
-
-    None // No matching group or entry found
 }

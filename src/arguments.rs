@@ -18,6 +18,7 @@ pub struct Args {
 
 #[derive(Subcommand, Debug)]
 pub enum Commands {
+    // TODO: Change Get to GetEntry
     Get { path: String },
     GetUsername { path: String },
     GetPassword { path: String },
