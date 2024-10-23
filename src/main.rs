@@ -39,34 +39,21 @@ fn main() -> Result<(), DatabaseOpenError> {
 
     match &args.command {
         arguments::Commands::GetEntry { path } => {
-            // let entry = find_entry_by_path(&keepass_tree, &path);
-
             match find_entry_by_path(&keepass_tree, &path) {
                 Ok(entry) => {
                     println!("Entry detail: {:?}", entry);
                 },
                 Err(e) => println!("ERROR: {}", e),
             }
-
         },
         arguments::Commands::GetPassword { path } => {
-            let password = find_password_by_path(&keepass_tree, &path);
-            match password {
+            match find_password_by_path(&keepass_tree, &path) {
                 Ok(pass) => println!("Password for entry '{}': '{}'", path, pass),
                 Err(e) => println!("ERROR: {}", e),
             }
         }
         arguments::Commands::FillTemplate { file_path } => {
-            let _ = file_path;
-            match create_database_tree(&db.root) {
-                None => {
-                    println!("Unfortunatelly, no entries have been found");
-                    std::process::exit(1);
-                }
-                Some(root_group) => {
-                    println!("Haha");
-                }
-            }
+            todo!("Not implemented... yet!");
         },
         _ => println!("Not implemented"),
     }
