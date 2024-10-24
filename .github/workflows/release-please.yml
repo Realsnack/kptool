@@ -15,7 +15,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20.x'
+          node-version: '18.x'
 
       - name: Release Please
         id: release_please
@@ -25,6 +25,9 @@ jobs:
           package-name: kptool
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get the release tag
+        run: echo "RELEASE_TAG=${{ steps.release_please.outputs.tag_name }}" >> $GITHUB_ENV
 
   build:
     runs-on: ubuntu-latest
@@ -65,13 +68,14 @@ jobs:
         with:
           name: kptool-x86_64-unknown-linux-gnu
 
-      - name: Get the tag from release-please
-        run: echo "RELEASE_TAG=${{ steps.release_please.outputs.release_tag }}" >> $GITHUB_ENV
+      - name: Check if RELEASE_TAG is set
+        if: env.RELEASE_TAG != ''
+        run: echo "RELEASE_TAG is set to ${{ env.RELEASE_TAG }}"
 
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ env.RELEASE_TAG }}  # Pass the tag name here
+          tag_name: ${{ env.RELEASE_TAG }}
           files: kptool-x86_64-unknown-linux-gnu
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
