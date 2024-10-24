@@ -53,7 +53,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: kptool-x86_64-unknown-linux-gnu  # Fixed name for Linux target
+          name: kptool-x86_64-unknown-linux-gnu
           path: target/x86_64-unknown-linux-gnu/release/kptool
 
   release-artifacts:
@@ -63,11 +63,15 @@ jobs:
       - name: Download Linux artifact
         uses: actions/download-artifact@v3
         with:
-          name: kptool-x86_64-unknown-linux-gnu  # Fixed name for download
+          name: kptool-x86_64-unknown-linux-gnu
+
+      - name: Get the tag from release-please
+        run: echo "RELEASE_TAG=${{ steps.release_please.outputs.release_tag }}" >> $GITHUB_ENV
 
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: ${{ env.RELEASE_TAG }}  # Pass the tag name here
           files: kptool-x86_64-unknown-linux-gnu
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
