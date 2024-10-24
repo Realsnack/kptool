@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/Realsnack/kptool/compare/v0.1.0...v0.1.1) (2024-10-24)
+
+
+### Bug Fixes
+
+* incorrect behaviour if sourcefile doesn't contain any variables ([a014017](https://github.com/Realsnack/kptool/commit/a0140178fb3bcd6eef91b84a3ed4b6571ed81295))
+
 ## 0.1.0 (2024-10-24)
 
 
