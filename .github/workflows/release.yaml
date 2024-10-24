@@ -3,7 +3,7 @@ name: create-release
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - 'v*.*.*'  # Triggered when a version tag is pushed, e.g., v1.0.0
 
 jobs:
   build:
