@@ -20,9 +20,6 @@ fn main() -> Result<(), DatabaseOpenError> {
         println!("Action chosen {:?}", args.command);
     }
 
-    let checksum = calculate_checksum(&args.database);
-    println!("Calculated cheksum {}", checksum);
-
     let mut file = File::open(args.database)?;
     let key = match &args.password {
         Some(password) => Some(DatabaseKey::new().with_password(password)),
@@ -35,7 +32,7 @@ fn main() -> Result<(), DatabaseOpenError> {
     };
 
     let loaded_database = create_database_tree(&db.root).unwrap();
-    let keepass_tree = KpTree::new(loaded_database, checksum);
+    let keepass_tree = KpTree::new(loaded_database);
 
     match &args.command {
         arguments::Commands::GetEntry { path } => {
@@ -61,15 +58,9 @@ fn main() -> Result<(), DatabaseOpenError> {
         arguments::Commands::FillTemplate { file_path } => {
             todo!("Not implemented... yet!");
         },
-        _ => println!("Not implemented"),
     }
 
     Ok(())
-}
-
-// REVIEW: possibly not necessary
-fn calculate_checksum(file_path: &String) -> String {
-    sha256::try_digest(file_path).unwrap()
 }
 
 // REVIEW: move to kp_tree.rs
