@@ -27,14 +27,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
         target:
           - x86_64-unknown-linux-gnu
-          - x86_64-apple-darwin
-          - aarch64-apple-darwin
 
     steps:
       - name: Checkout code
@@ -73,7 +70,5 @@ jobs:
         with:
           files: |
             kptool-x86_64-unknown-linux-gnu
-            kptool-x86_64-apple-darwin
-            kptool-aarch64-apple-darwin
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
