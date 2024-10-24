@@ -94,7 +94,7 @@ fn fill_template(kp_tree: &KpTree, file_path: &String) -> Result<bool, KpError> 
     }
 
     if variables.is_empty() {
-        println!("Variables: {:?}", variables);
+        return Err(KpError::NoVariablesInSourceFile(file_path.to_owned()));
     }
 
     if !errors.is_empty() {
