@@ -53,22 +53,21 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: kptool-${{ matrix.target }}
-          path: target/${{ matrix.target }}/release/kptool
+          name: kptool-x86_64-unknown-linux-gnu  # Fixed name for Linux target
+          path: target/x86_64-unknown-linux-gnu/release/kptool
 
   release-artifacts:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Download all artifacts
+      - name: Download Linux artifact
         uses: actions/download-artifact@v3
         with:
-          name: kptool-*
+          name: kptool-x86_64-unknown-linux-gnu  # Fixed name for download
 
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
-          files: |
-            kptool-x86_64-unknown-linux-gnu
+          files: kptool-x86_64-unknown-linux-gnu
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
