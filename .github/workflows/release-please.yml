@@ -27,12 +27,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: [ubuntu-latest, macos-latest]
         target:
           - x86_64-unknown-linux-gnu
-          - x86_64-pc-windows-msvc
           - x86_64-apple-darwin
           - aarch64-apple-darwin
 
@@ -73,7 +73,6 @@ jobs:
         with:
           files: |
             kptool-x86_64-unknown-linux-gnu
-            kptool-x86_64-pc-windows-msvc.exe
             kptool-x86_64-apple-darwin
             kptool-aarch64-apple-darwin
         env:
