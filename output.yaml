@@ -1,0 +1,15 @@
+environment: int
+database:
+  url: vip-tst-app.com/testapp
+  username: YothisIsThePasswordMujKamaradeRetarde69420!
+  password: YothisIsThePasswordMujKamaradeRetarde69420!
+  schema: riskengine
+
+redis:
+  offline:
+    host: server1:6379
+    password: YothisIsThePasswordMujKamaradeRetarde69420!
+  online:
+    host: server2:6380
+    password: YothisIsThePasswordMujKamaradeRetarde69420!
+

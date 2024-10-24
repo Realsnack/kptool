@@ -1,1 +1,8 @@
 /target
+
+# Testing yaml file
+fail.yaml
+success.yaml
+
+# Testing keepass db
+*.kdbx
