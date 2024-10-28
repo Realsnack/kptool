@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.2](https://github.com/Realsnack/kptool/compare/v0.1.1...v0.1.2) (2024-10-28)
+
+
+### Bug Fixes
+
+* code scan [#11](https://github.com/Realsnack/kptool/issues/11) ([6e62053](https://github.com/Realsnack/kptool/commit/6e620535a73abc7c55d7af01dfad6ffb6e355910))
+* code scan alerts ([96adb25](https://github.com/Realsnack/kptool/commit/96adb25c194956a995ee4cee048d8a3db00a2c0a))
+* more unnecessary references ([8a8287e](https://github.com/Realsnack/kptool/commit/8a8287ed53965385b09c4e47242696159e33d306))
+* remove unused variable ([6314cc8](https://github.com/Realsnack/kptool/commit/6314cc878c10103899d7efc024dbbd41edb41026))
+* unnecessary references ([eb2421e](https://github.com/Realsnack/kptool/commit/eb2421ed8b4e1387480b30bff2570c8817f2ba45))
+* unneeded return statement ([2ccf577](https://github.com/Realsnack/kptool/commit/2ccf577dc3a4e6ad7b2b3107245e02dcd3ecec5d))
+
 ## [0.1.1](https://github.com/Realsnack/kptool/compare/v0.1.0...v0.1.1) (2024-10-24)
 
 
