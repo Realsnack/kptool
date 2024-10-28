@@ -131,7 +131,7 @@ fn prepare_template_export(file_path: &String, variables: Vec<(String, String)>)
                     // find correct tuple
                     let secret_tuple = variables
                         .iter()
-                        .find(|tuple| tuple.0 == full_match.as_str().to_owned());
+                        .find(|tuple| tuple.0 == full_match.as_str());
 
                     file_vec.push(line.replace(full_match.as_str(), secret_tuple.unwrap().1.as_str()));
                 }
@@ -214,7 +214,7 @@ fn create_group_node(group_ref: &Group, parent_group: &mut KpGroup) {
 
 fn find_target_kp_group<'a>(
     kp_tree: &'a KpTree,
-    splitted_search_path: &Vec<&str>,
+    splitted_search_path: &[&str],
 ) -> Result<&'a KpGroup, KpError> {
     let mut searched_group = &kp_tree.root_group;
 
