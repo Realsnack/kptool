@@ -24,10 +24,7 @@ fn main() -> Result<(), DatabaseOpenError> {
     }
 
     let mut file = File::open(args.database)?;
-    let key = match &args.password {
-        Some(password) => Some(DatabaseKey::new().with_password(password)),
-        None => None,
-    };
+    let key = args.password.as_ref().map(|password| DatabaseKey::new().with_password(password));
 
     let db = match key {
         Some(key) => Database::open(&mut file, key)?,
