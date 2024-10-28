@@ -35,7 +35,7 @@ fn main() -> Result<(), DatabaseOpenError> {
     let keepass_tree = KpTree::new(loaded_database);
 
     match &args.command {
-        arguments::Commands::GetEntry { path } => match find_entry_by_path(&keepass_tree, &path) {
+        arguments::Commands::GetEntry { path } => match find_entry_by_path(&keepass_tree, path) {
             Ok(entry) => {
                 println!("Entry detail: {:?}", entry);
             }
@@ -48,7 +48,7 @@ fn main() -> Result<(), DatabaseOpenError> {
             }
         }
         arguments::Commands::GetPassword { path } => {
-            match find_password_by_path(&keepass_tree, &path) {
+            match find_password_by_path(&keepass_tree, path) {
                 Ok(pass) => println!("Password for entry '{}': '{}'", path, pass),
                 Err(e) => println!("ERROR: {}", e),
             }
@@ -181,7 +181,7 @@ fn get_regex_matches(file_path: &String) -> Result<Vec<(String, String, String)>
 // REVIEW: move to kp_tree.rs
 fn create_database_tree(db_group: &Group) -> Option<KpGroup> {
     let mut root_group = KpGroup::new();
-    create_group_node(&db_group, &mut root_group);
+    create_group_node(db_group, &mut root_group);
 
     if root_group.entries.is_empty() && root_group.groups.is_empty() {
         return None;
@@ -196,7 +196,7 @@ fn create_group_node(group_ref: &Group, parent_group: &mut KpGroup) {
             Node::Group(g) => {
                 // DEBUG: println!("Group '{}' added under: {}", g.name, group_ref.name);
                 let mut added_group = KpGroup::new();
-                create_group_node(&g, &mut added_group);
+                create_group_node(g, &mut added_group);
                 parent_group.groups.insert(g.clone().name, added_group);
             }
             Node::Entry(e) => {
