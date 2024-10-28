@@ -42,7 +42,7 @@ fn main() -> Result<(), DatabaseOpenError> {
             Err(e) => println!("ERROR: {}", e),
         },
         arguments::Commands::GetUsername { path } => {
-            match find_username_by_path(&keepass_tree, &path) {
+            match find_username_by_path(&keepass_tree, path) {
                 Ok(username) => println!("Found username: {}", username),
                 Err(e) => println!("ERROR: {}", e),
             }
@@ -54,7 +54,7 @@ fn main() -> Result<(), DatabaseOpenError> {
             }
         }
         arguments::Commands::FillTemplate { file_path } => {
-            match fill_template(&keepass_tree, &file_path) {
+            match fill_template(&keepass_tree, file_path) {
                 Ok(_) => std::process::exit(0),
                 Err(e) => {
                     println!("ERROR: Following errors found: \n{}", e);
