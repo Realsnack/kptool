@@ -101,7 +101,7 @@ fn fill_template(kp_tree: &KpTree, file_path: &String) -> Result<bool, KpError> 
 
     let _ = write_filled_template(file_path, variables);
 
-    return Ok(true);
+    Ok(true)
 }
 
 
