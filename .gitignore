@@ -3,6 +3,7 @@
 # Testing yaml file
 fail.yaml
 success.yaml
+output.yaml
 
 # Testing keepass db
 *.kdbx
