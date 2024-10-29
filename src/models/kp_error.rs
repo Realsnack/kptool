@@ -20,7 +20,7 @@ impl fmt::Display for KpError {
             KpError::TemplateVariablesNotFound(ref vec) => {
                 let mut result = String::new();
                 for (variable, error) in vec {
-                    result.push_str(&format!("Template variable '{}' not found: {}\n", variable, error));
+                    result.push_str(&format!("Error for template variable '{}' - {}\n", variable, error));
                 }
                 write!(f, "{}", result)
             },

@@ -81,7 +81,12 @@ fn fill_template(kp_tree: &KpTree, file_path: &String) -> Result<bool, KpError> 
             match find_entry_by_path(kp_tree, match_tuple.1.as_str()) {
                 Ok(entry) => {
                     // DEBUG: println!("Found entry for: {}", match_tuple.0);
-                    variables.push((match_tuple.0, entry.password.as_ref().unwrap().to_owned()));
+                    if match_tuple.2 == "PASSWORD" {
+                        variables.push((match_tuple.0, entry.password.as_ref().unwrap().to_owned()));
+                    }
+                    else if match_tuple.2 == "USERNAME" {
+                        variables.push((match_tuple.0, entry.username.as_ref().unwrap().to_owned()));
+                    }
                 }
                 Err(e) => {
                     errors.push((match_tuple.0, e));
