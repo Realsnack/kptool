@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.3](https://github.com/Realsnack/kptool/compare/v0.1.2...v0.1.3) (2024-10-29)
+
+
+### Bug Fixes
+
+* improper error handling for not finding any variables in db ([a8d7859](https://github.com/Realsnack/kptool/commit/a8d7859f76f8d5c0c997fba484d197171d284202))
+* passwords filled instead of usernames ([069ca9b](https://github.com/Realsnack/kptool/commit/069ca9b3baf5271b8b95e9d7dcafa681e97b8b10))
+
 ## [0.1.2](https://github.com/Realsnack/kptool/compare/v0.1.1...v0.1.2) (2024-10-28)
 
 
