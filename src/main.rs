@@ -89,14 +89,13 @@ fn fill_template(kp_tree: &KpTree, file_path: &String) -> Result<bool, KpError> 
             }
         }
     }
+    
+    if !errors.is_empty() {
+        return Err(KpError::TemplateVariablesNotFound(errors));
+    }
 
     if variables.is_empty() {
         return Err(KpError::NoVariablesInSourceFile(file_path.to_owned()));
-    }
-
-    if !errors.is_empty() {
-        println!("Errors: {:?}", errors);
-        return Err(KpError::TemplateVariablesNotFound(errors));
     }
 
     let _ = write_filled_template(file_path, variables);
