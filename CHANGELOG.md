@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/Realsnack/kptool/compare/v0.1.3...v0.2.0) (2026-01-16)
+
+
+### Features
+
+* Cleanup and update of libraries ([690864a](https://github.com/Realsnack/kptool/commit/690864abd6a6bd7e3cb8c464de947d3bc83d63c4))
+
 ## [0.1.3](https://github.com/Realsnack/kptool/compare/v0.1.2...v0.1.3) (2024-10-29)
 
 
