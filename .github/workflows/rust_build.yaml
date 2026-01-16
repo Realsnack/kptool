@@ -36,3 +36,4 @@ jobs:
 
       - name: Run tests
         run: cargo test --jobs=$(nproc --all) --verbose
+
